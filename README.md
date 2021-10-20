@@ -13,7 +13,7 @@ make
 sudo make install
 ```
 
-To build and install all selected components (for instance 'filesource' - multiple components are separated by ';'):
+To build and install selected components (for instance 'filesource' - multiple components are separated by ';'):
 ```
 mkdir build
 cd build
