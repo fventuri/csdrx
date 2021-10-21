@@ -75,3 +75,11 @@ if(NOT DEFINED COMPONENTS OR "tcpsourcemeasuredelay" IN_LIST COMPONENTS)
     add_subdirectory(tcpsourcemeasuredelay)
     target_sources(csdrx PRIVATE $<TARGET_OBJECTS:tcpsourcemeasuredelay>)
 endif()
+
+if(NOT DEFINED COMPONENTS OR "pulseaudiowritermeasuredelay" IN_LIST COMPONENTS)
+    pkg_check_modules(PULSEAUDIO REQUIRED libpulse-simple)
+    add_subdirectory(pulseaudiowritermeasuredelay)
+    target_sources(csdrx PRIVATE $<TARGET_OBJECTS:pulseaudiowritermeasuredelay>)
+    target_link_libraries(csdrx ${PULSEAUDIO_LIBRARIES})
+endif()
+

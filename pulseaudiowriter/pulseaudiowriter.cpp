@@ -10,11 +10,6 @@
 #include <unistd.h>
 #include <pulse/error.h>
 
-#include <iostream>
-extern const int num_delay_slots;
-extern struct timespec delay_slots[];
-extern const double delay_interval;
-
 using namespace Csdrx;
 
 template <typename T>
@@ -57,22 +52,6 @@ T* PulseAudioWriter<T>::getWritePointer() {
 
 template <typename T>
 void PulseAudioWriter<T>::advance(size_t how_much) {
-    static long total_samples = 0;
-    static long delay_next_print = 0;
-    static int delay_next_slot = 0;
-    total_samples += how_much;
-    if (total_samples > delay_next_print) {
-        struct timespec end_time;
-        clock_gettime(CLOCK_REALTIME, &end_time);
-        long delay_ns = (end_time.tv_sec - delay_slots[delay_next_slot].tv_sec) * 1000000000 + (end_time.tv_nsec - delay_slots[delay_next_slot].tv_nsec);
-        time_t now = time(nullptr);
-        std::cerr.write(ctime(&now), 24);
-        std::cerr << " - delay=" << (delay_ns / 1e6) << " ms" << std::endl;
-        // WARNING - sample rate is hardcoded
-        delay_next_print += long(48000 * delay_interval);
-        delay_next_slot = (delay_next_slot + 1) % num_delay_slots;
-    }
-
     int error;
     pa_simple_write(pa, (const uint8_t*) buffer, sizeof(T) * how_much, &error);
 }

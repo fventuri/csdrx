@@ -1,0 +1,2 @@
+add_library(pulseaudiowritermeasuredelay OBJECT pulseaudiowritermeasuredelay.cpp)
+target_compile_options(pulseaudiowritermeasuredelay PRIVATE "-fPIC")
