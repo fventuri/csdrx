@@ -64,7 +64,7 @@ void PulseAudioWriter<T>::advance(size_t how_much) {
     if (total_samples > delay_next_print) {
         struct timespec end_time;
         clock_gettime(CLOCK_REALTIME, &end_time);
-        long delay_ns = (end_time.tv_sec - delay_slots[delay_next_slot].tv_sec) * 1000000 + (end_time.tv_nsec - delay_slots[delay_next_slot].tv_nsec);
+        long delay_ns = (end_time.tv_sec - delay_slots[delay_next_slot].tv_sec) * 1000000000 + (end_time.tv_nsec - delay_slots[delay_next_slot].tv_nsec);
         time_t now = time(nullptr);
         std::cerr.write(ctime(&now), 24);
         std::cerr << " - delay=" << (delay_ns / 1e6) << " ms" << std::endl;
