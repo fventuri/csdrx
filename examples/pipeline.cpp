@@ -165,6 +165,10 @@ void Pipeline::stop(double delay)
     untypedToTyped1<Csdrx::FileSource, Csdr::UntypedSource>(source,
         [](auto s){
             s->stop();
+        }) ||
+    untypedToTyped1<Csdrx::TcpSourceMeasureDelay, Csdr::UntypedSource>(source,
+        [](auto s){
+            s->stop();
         });
 
     // sleep for some time to let all the downstreamm stages drain
