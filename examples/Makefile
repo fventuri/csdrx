@@ -3,11 +3,13 @@ CXXFLAGS=-O -Wall
 LDLIBS=-lcsdr++ -lcsdrx
 
 
-all: fm_receiver usb_receiver
+all: fm_receiver fm_receiver_tcp_source usb_receiver
 
 fm_receiver: fm_receiver.cpp pipeline.cpp
+
+fm_receiver_tcp_source: fm_receiver_tcp_source.cpp pipeline.cpp
 
 usb_receiver: usb_receiver.cpp pipeline.cpp
 
 clean:
-	rm -f fm_receiver usb_receiver
+	rm -f fm_receiver fm_receiver_tcp_source usb_receiver

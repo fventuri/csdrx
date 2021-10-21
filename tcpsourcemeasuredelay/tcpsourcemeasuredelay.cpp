@@ -45,6 +45,11 @@ TcpSourceMeasureDelay<T>::TcpSourceMeasureDelay(in_addr_t ip, unsigned short por
 }
 
 template <typename T>
+TcpSourceMeasureDelay<T>::TcpSourceMeasureDelay(unsigned short port) :
+    TcpSourceMeasureDelay(inet_addr("127.0.0.1"), port)
+{}
+
+template <typename T>
 void TcpSourceMeasureDelay<T>::setWriter(Csdr::Writer<T> *writer) {
     Csdr::Source<T>::setWriter(writer);
     if (thread == nullptr) {

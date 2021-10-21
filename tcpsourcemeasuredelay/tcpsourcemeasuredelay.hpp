@@ -21,6 +21,7 @@ namespace Csdrx {
         public:
             // TcpSourceMeasureDelay(std::string remote);
             TcpSourceMeasureDelay(in_addr_t ip, unsigned short port);
+            TcpSourceMeasureDelay(unsigned short port);
             ~TcpSourceMeasureDelay();
             void setWriter(Csdr::Writer<T>* writer) override;
             void stop();
