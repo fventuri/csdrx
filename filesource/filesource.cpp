@@ -13,6 +13,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+extern const int num_delay_slots;
+extern struct timespec delay_slots[];
+extern const double delay_interval;
+
 using namespace Csdrx;
 
 template<typename T>
@@ -51,6 +55,9 @@ void FileSource<T>::loop() {
     size_t total_samples = 0;
     struct timespec start_time;
 
+    static long delay_next_save = 0;
+    static int delay_next_slot = 0;
+
     while (run) {
         available = std::min(this->writer->writeable(), (size_t) 1024) * sizeof(T) - offset;
         if (samplerate > 0) {
@@ -76,6 +83,12 @@ void FileSource<T>::loop() {
             this->writer->advance(samples);
             offset = (offset + read_bytes) % sizeof(T);
             total_samples += samples;
+            if (total_samples > delay_next_save) {
+                clock_gettime(CLOCK_REALTIME, &delay_slots[delay_next_slot]);
+                // WARNING - sample rate is hardcoded
+                delay_next_save += long(2000000 * delay_interval);
+                delay_next_slot = (delay_next_slot + 1) % num_delay_slots;
+            }
         }
     }
 }
