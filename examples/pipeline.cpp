@@ -166,6 +166,10 @@ void Pipeline::stop(double delay)
         [](auto s){
             s->stop();
         }) ||
+    untypedToTyped1<Csdrx::FileSourceMeasureDelay, Csdr::UntypedSource>(source,
+        [](auto s){
+            s->stop();
+        }) ||
     untypedToTyped1<Csdrx::TcpSourceMeasureDelay, Csdr::UntypedSource>(source,
         [](auto s){
             s->stop();

@@ -23,8 +23,8 @@
 #include <csdr/agc.hpp>
 #include <csdr/limit.hpp>
 #include <csdr/shift.hpp>
-#include <csdrx/filesource.hpp>
-#include <csdrx/pulseaudiowriter.hpp>
+#include <csdrx/filesourcemeasuredelay.hpp>
+#include <csdrx/pulseaudiowritermeasuredelay.hpp>
 #include "pipeline.hpp"
 
 constexpr int T_BUFSIZE = (1024 * 1024 / 4);
@@ -52,7 +52,7 @@ int main()
 
     auto hamming = new HammingWindow();
 
-    Pipeline p(new FileSource<CF32>(), true);
+    Pipeline p(new FileSourceMeasureDelay<CF32>(2000000), true);
     p | new ShiftAddfast(0.005)
       | new FirDecimate(42, 0.005, hamming)
       | new FilterModule<CF32>(new BandPassFilter<CF32>(0.0, 0.06, 0.05, hamming))
@@ -60,7 +60,7 @@ int main()
       | new Agc<float>()
       | new Limit(1.0)
       | new Converter<float, short>()
-      | new PulseAudioWriter<short>(48000, 10240, "usb_receiver");
+      | new PulseAudioWriterMeasureDelay<short>(48000, 10240, "usb_receiver");
 
 
     struct timespec delay = { 0, 100000000 };   // 100ms delay

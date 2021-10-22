@@ -5,7 +5,9 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-#include "filesource.hpp"
+#include "filesourcemeasuredelay.hpp"
+// needed for the IOException class
+#include "../filesource/filesource.hpp"
 
 #include <cstring>
 #include <unistd.h>
@@ -13,15 +15,22 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+extern const int num_delay_slots;
+extern struct timespec delay_slots[];
+extern const double delay_interval;
+
 using namespace Csdrx;
 
 template<typename T>
-FileSource<T>::~FileSource() {
+FileSourceMeasureDelay<T>::~FileSourceMeasureDelay() {
     ::close(fd);
 }
 
 template <typename T>
-FileSource<T>::FileSource(const char* filename, double samplerate) {
+FileSourceMeasureDelay<T>::FileSourceMeasureDelay(unsigned int delay_samplerate,
+                       const char* filename, double samplerate):
+    delay_samplerate(delay_samplerate)
+{
 
     if (filename == nullptr || strcmp(filename, "") == 0 || strcmp(filename, "-") == 0) {
         // default reads from stdin
@@ -36,7 +45,7 @@ FileSource<T>::FileSource(const char* filename, double samplerate) {
 }
 
 template <typename T>
-void FileSource<T>::setWriter(Csdr::Writer<T> *writer) {
+void FileSourceMeasureDelay<T>::setWriter(Csdr::Writer<T> *writer) {
     Csdr::Source<T>::setWriter(writer);
     if (thread == nullptr) {
         thread = new std::thread( [this] () { loop(); });
@@ -44,12 +53,15 @@ void FileSource<T>::setWriter(Csdr::Writer<T> *writer) {
 }
 
 template <typename T>
-void FileSource<T>::loop() {
+void FileSourceMeasureDelay<T>::loop() {
     int read_bytes;
     int available;
     int offset = 0;
     size_t total_samples = 0;
     struct timespec start_time;
+
+    static long delay_next_save = 0;
+    static int delay_next_slot = 0;
 
     while (run) {
         available = std::min(this->writer->writeable(), (size_t) 1024) * sizeof(T) - offset;
@@ -76,12 +88,17 @@ void FileSource<T>::loop() {
             this->writer->advance(samples);
             offset = (offset + read_bytes) % sizeof(T);
             total_samples += samples;
+            if (total_samples > delay_next_save) {
+                clock_gettime(CLOCK_REALTIME, &delay_slots[delay_next_slot]);
+                delay_next_save += long(delay_samplerate * delay_interval);
+                delay_next_slot = (delay_next_slot + 1) % num_delay_slots;
+            }
         }
     }
 }
 
 template <typename T>
-void FileSource<T>::stop() {
+void FileSourceMeasureDelay<T>::stop() {
     run = false;
     if (thread != nullptr) {
         thread->join();
@@ -90,14 +107,14 @@ void FileSource<T>::stop() {
 }
 
 template <typename T>
-bool FileSource<T>::isRunning() const {
+bool FileSourceMeasureDelay<T>::isRunning() const {
     return run;
 }
 
 namespace Csdrx {
-    template class FileSource<unsigned char>;
-    template class FileSource<short>;
-    template class FileSource<float>;
-    template class FileSource<Csdr::complex<short>>;
-    template class FileSource<Csdr::complex<float>>;
+    template class FileSourceMeasureDelay<unsigned char>;
+    template class FileSourceMeasureDelay<short>;
+    template class FileSourceMeasureDelay<float>;
+    template class FileSourceMeasureDelay<Csdr::complex<short>>;
+    template class FileSourceMeasureDelay<Csdr::complex<float>>;
 }

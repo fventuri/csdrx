@@ -25,7 +25,10 @@ TcpSourceMeasureDelay<T>::~TcpSourceMeasureDelay() {
 }
 
 template <typename T>
-TcpSourceMeasureDelay<T>::TcpSourceMeasureDelay(in_addr_t ip, unsigned short port) {
+TcpSourceMeasureDelay<T>::TcpSourceMeasureDelay(unsigned int delay_samplerate,
+                                                in_addr_t ip, unsigned short port):
+    delay_samplerate(delay_samplerate)
+{
     sockaddr_in remote{};
     std::memset(&remote, 0, sizeof(remote));
 
@@ -45,8 +48,9 @@ TcpSourceMeasureDelay<T>::TcpSourceMeasureDelay(in_addr_t ip, unsigned short por
 }
 
 template <typename T>
-TcpSourceMeasureDelay<T>::TcpSourceMeasureDelay(unsigned short port) :
-    TcpSourceMeasureDelay(inet_addr("127.0.0.1"), port)
+TcpSourceMeasureDelay<T>::TcpSourceMeasureDelay(unsigned int delay_samplerate,
+                                                unsigned short port) :
+    TcpSourceMeasureDelay(delay_samplerate, inet_addr("127.0.0.1"), port)
 {}
 
 template <typename T>
@@ -80,8 +84,7 @@ void TcpSourceMeasureDelay<T>::loop() {
             total_samples += samples;
             if (total_samples > delay_next_save) {
                 clock_gettime(CLOCK_REALTIME, &delay_slots[delay_next_slot]);
-                // WARNING - sample rate is hardcoded
-                delay_next_save += long(2000000 * delay_interval);
+                delay_next_save += long(delay_samplerate * delay_interval);
                 delay_next_slot = (delay_next_slot + 1) % num_delay_slots;
             }
         }

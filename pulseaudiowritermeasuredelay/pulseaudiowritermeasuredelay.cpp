@@ -20,6 +20,7 @@ using namespace Csdrx;
 template <typename T>
 PulseAudioWriterMeasureDelay<T>::PulseAudioWriterMeasureDelay(unsigned int samplerate, size_t buffer_size,
                              const char* app_name, const char* stream_name):
+    samplerate(samplerate),
     buffer_size(buffer_size),
     buffer((T*) malloc(sizeof(T) * buffer_size))
 {
@@ -68,8 +69,7 @@ void PulseAudioWriterMeasureDelay<T>::advance(size_t how_much) {
         time_t now = time(nullptr);
         std::cerr.write(ctime(&now), 24);
         std::cerr << " - delay=" << (delay_ns / 1e6) << " ms" << std::endl;
-        // WARNING - sample rate is hardcoded
-        delay_next_print += long(48000 * delay_interval);
+        delay_next_print += long(samplerate * delay_interval);
         delay_next_slot = (delay_next_slot + 1) % num_delay_slots;
     }
 

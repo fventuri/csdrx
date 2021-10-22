@@ -15,6 +15,7 @@
 #include <csdr/source.hpp>
 #include <csdr/writer.hpp>
 #include <csdrx/filesource.hpp>
+#include <csdrx/filesourcemeasuredelay.hpp>
 #include <csdrx/tcpsourcemeasuredelay.hpp>
 
 class Pipeline {

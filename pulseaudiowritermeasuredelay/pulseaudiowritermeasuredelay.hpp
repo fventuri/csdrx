@@ -23,6 +23,7 @@ namespace Csdrx {
             T* getWritePointer() override;
             void advance(size_t how_much) override;
         private:
+            unsigned int samplerate;
             size_t buffer_size;
             T* buffer;
             pa_simple *pa;

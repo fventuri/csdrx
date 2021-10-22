@@ -20,8 +20,10 @@ namespace Csdrx {
     class TcpSourceMeasureDelay: public Csdr::Source<T> {
         public:
             // TcpSourceMeasureDelay(std::string remote);
-            TcpSourceMeasureDelay(in_addr_t ip, unsigned short port);
-            TcpSourceMeasureDelay(unsigned short port);
+            TcpSourceMeasureDelay(unsigned int delay_samplerate,
+                                  in_addr_t ip, unsigned short port);
+            TcpSourceMeasureDelay(unsigned int delay_samplerate,
+                                  unsigned short port);
             ~TcpSourceMeasureDelay();
             void setWriter(Csdr::Writer<T>* writer) override;
             void stop();
@@ -30,6 +32,7 @@ namespace Csdrx {
             int sock;
             bool run = true;
             std::thread* thread = nullptr;
+            unsigned int delay_samplerate;
     };
 
 }
