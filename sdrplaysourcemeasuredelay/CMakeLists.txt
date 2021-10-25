@@ -1,0 +1,2 @@
+add_library(sdrplaysourcemeasuredelay OBJECT sdrplaysourcemeasuredelay.cpp)
+target_compile_options(sdrplaysourcemeasuredelay PRIVATE "-fPIC")
