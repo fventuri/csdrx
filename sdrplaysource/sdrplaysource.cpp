@@ -26,7 +26,7 @@ SDRplaySource<T>::~SDRplaySource() {
         std::cerr << "sdrplay_api_Close() failed" << std::endl;
 }
 
-void open_sdrplay_api() {
+static void open_sdrplay_api() {
     auto err = sdrplay_api_Open();
     if (err != sdrplay_api_Success)
         throw SDRplayException("sdrplay_api_Open() failed");
@@ -169,16 +169,16 @@ void SDRplaySource<Csdr::complex<float>>::stream_callback(short *xi, short *xq,
 
     int xidx = 0;
     for (int i = 0; i < MAX_WRITE_TRIES; i++) {
-         int samples = std::min((int) writer->writeable(), (int) numSamples - xidx);
-         auto writer_pointer = writer->getWritePointer();
-         for (int k = 0; k < samples; k++, xidx++) {
-             writer_pointer[k].real(static_cast<float>(xi[xidx]) / 32768.0f);
-             writer_pointer[k].imag(static_cast<float>(xq[xidx]) / 32768.0f);
-         }
-         writer->advance(samples);
-         total_samples += samples;
-         if (xidx == numSamples)
-             return;
+        int samples = std::min((int) writer->writeable(), (int) numSamples - xidx);
+        auto writer_pointer = writer->getWritePointer();
+        for (int k = 0; k < samples; k++, xidx++) {
+            writer_pointer[k].real(static_cast<float>(xi[xidx]) / 32768.0f);
+            writer_pointer[k].imag(static_cast<float>(xq[xidx]) / 32768.0f);
+        }
+        writer->advance(samples);
+        total_samples += samples;
+        if (xidx == numSamples)
+            return;
     }
 
     std::cerr << "stream_callback() - dropped " << (numSamples - xidx) << " samples" << std::endl;
@@ -204,15 +204,15 @@ void SDRplaySource<Csdr::complex<short>>::stream_callback(short *xi, short *xq,
 
     int xidx = 0;
     for (int i = 0; i < MAX_WRITE_TRIES; i++) {
-         int samples = std::min((int) writer->writeable(), (int) numSamples - xidx);
-         auto writer_pointer = writer->getWritePointer();
-         for (int k = 0; k < samples; k++, xidx++) {
-             writer_pointer[k].real(xi[xidx]);
-             writer_pointer[k].imag(xq[xidx]);
-         }
-         writer->advance(samples);
-         if (xidx == numSamples)
-             return;
+        int samples = std::min((int) writer->writeable(), (int) numSamples - xidx);
+        auto writer_pointer = writer->getWritePointer();
+        for (int k = 0; k < samples; k++, xidx++) {
+            writer_pointer[k].real(xi[xidx]);
+            writer_pointer[k].imag(xq[xidx]);
+        }
+        writer->advance(samples);
+        if (xidx == numSamples)
+            return;
     }
 
     std::cerr << "stream_callback() - dropped " << (numSamples - xidx) << " samples" << std::endl;
@@ -229,8 +229,9 @@ static void unqualified_stream_callback_sc16(short *xi, short *xq,
     return;
 }
 
-void event_callback(sdrplay_api_EventT eventId, sdrplay_api_TunerSelectT tuner,
-                    sdrplay_api_EventParamsT *params, void *cbContext)
+static void event_callback(sdrplay_api_EventT eventId,
+                           sdrplay_api_TunerSelectT tuner,
+                           sdrplay_api_EventParamsT *params, void *cbContext)
 {
     return;
 }
