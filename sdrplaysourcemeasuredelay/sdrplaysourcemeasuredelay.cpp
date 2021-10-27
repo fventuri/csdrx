@@ -164,6 +164,7 @@ bool SDRplaySourceMeasureDelay<T>::select_device_rspduo(sdrplay_api_DeviceT& dev
 
     return found;
 }
+
 static constexpr int MAX_WRITE_TRIES = 3;
 
 template<>
@@ -188,9 +189,9 @@ void SDRplaySourceMeasureDelay<Csdr::complex<float>>::stream_callback(short *xi,
         writer->advance(samples);
         total_samples += samples;
         if (total_samples > delay_next_save) {
-             clock_gettime(CLOCK_REALTIME, &delay_slots[delay_next_slot]);
-             delay_next_save += long(samplerate * delay_interval);
-             delay_next_slot = (delay_next_slot + 1) % num_delay_slots;
+            clock_gettime(CLOCK_REALTIME, &delay_slots[delay_next_slot]);
+            delay_next_save += long(samplerate * delay_interval);
+            delay_next_slot = (delay_next_slot + 1) % num_delay_slots;
         }
         if (xidx == numSamples)
             return;
@@ -231,9 +232,9 @@ void SDRplaySourceMeasureDelay<Csdr::complex<short>>::stream_callback(short *xi,
         }
         writer->advance(samples);
         if (total_samples > delay_next_save) {
-             clock_gettime(CLOCK_REALTIME, &delay_slots[delay_next_slot]);
-             delay_next_save += long(samplerate * delay_interval);
-             delay_next_slot = (delay_next_slot + 1) % num_delay_slots;
+            clock_gettime(CLOCK_REALTIME, &delay_slots[delay_next_slot]);
+            delay_next_save += long(samplerate * delay_interval);
+            delay_next_slot = (delay_next_slot + 1) % num_delay_slots;
         }
         if (xidx == numSamples)
             return;

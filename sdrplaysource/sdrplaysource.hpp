@@ -9,6 +9,7 @@
 
 #include <csdr/source.hpp>
 #include <sdrplay_api.h>
+#include <stdexcept>
 
 namespace Csdrx {
 

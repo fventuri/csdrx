@@ -16,9 +16,11 @@
 #include <csdr/writer.hpp>
 #include <csdrx/filesource.hpp>
 #include <csdrx/sdrplaysource.hpp>
+#include <csdrx/soapysource.hpp>
 #include <csdrx/filesourcemeasuredelay.hpp>
 #include <csdrx/tcpsourcemeasuredelay.hpp>
 #include <csdrx/sdrplaysourcemeasuredelay.hpp>
+#include <csdrx/soapysourcemeasuredelay.hpp>
 
 class Pipeline {
 

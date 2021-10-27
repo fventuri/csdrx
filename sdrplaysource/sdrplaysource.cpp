@@ -158,6 +158,7 @@ bool SDRplaySource<T>::select_device_rspduo(sdrplay_api_DeviceT& device_rspduo,
 
     return found;
 }
+
 static constexpr int MAX_WRITE_TRIES = 3;
 
 template<>
