@@ -9,6 +9,7 @@
 
 #include <csdr/source.hpp>
 #include <SoapySDR/Device.hpp>
+#include <SoapySDR/Version.hpp>
 #include <stdexcept>
 #include <thread>
 
@@ -40,7 +41,9 @@ namespace Csdrx {
             void setGain(const std::string& name, const double value);
             void setAGC(bool enable);
             void setDCOffset(bool enable);
+#if defined(SOAPY_SDR_API_VERSION) && (SOAPY_SDR_API_VERSION >= 0x00080000)
             void setIQBalance(bool enable);
+#endif
             void writeSetting(const std::string &key, const std::string &value);
             void writeChannelSetting(const std::string &key, const std::string &value);
         private:
