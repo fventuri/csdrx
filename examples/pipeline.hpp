@@ -16,6 +16,7 @@
 #include <csdr/writer.hpp>
 #include <csdrx/filesource.hpp>
 #include <csdrx/sdrplaysource.hpp>
+#include <csdrx/soapysource.hpp>
 
 class Pipeline {
 

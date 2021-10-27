@@ -169,6 +169,10 @@ void Pipeline::stop(double delay)
     untypedToTyped1complex<Csdrx::SDRplaySource, Csdr::UntypedSource>(source,
         [](auto s){
             s->stop();
+        }) ||
+    untypedToTyped1complex<Csdrx::SoapySource, Csdr::UntypedSource>(source,
+        [](auto s){
+            s->stop();
         });
 
     // sleep for some time to let all the downstreamm stages drain

@@ -8,6 +8,7 @@
 #pragma once
 
 #include <csdr/source.hpp>
+#include <stdexcept>
 
 namespace Csdrx {
 
