@@ -192,11 +192,13 @@ void SoapySourceMeasureDelay<T>::setDCOffset(bool enable)
     device->setDCOffsetMode(SOAPY_SDR_RX, channel, enable);
 }
 
+#if defined(SOAPY_SDR_API_VERSION) && (SOAPY_SDR_API_VERSION >= 0x00080000)
 template <typename T>
 void SoapySourceMeasureDelay<T>::setIQBalance(bool enable)
 {
     device->setIQBalanceMode(SOAPY_SDR_RX, channel, enable);
 }
+#endif
 
 template <typename T>
 void SoapySourceMeasureDelay<T>::writeSetting(const std::string &key, const std::string &value)
