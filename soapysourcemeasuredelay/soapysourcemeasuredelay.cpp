@@ -81,7 +81,7 @@ void SoapySourceMeasureDelay<T>::loop() {
 
     total_samples = 0;
     while (run) {
-        available = std::min(this->writer->writeable(), (size_t) 8192);
+        available = std::min(this->writer->writeable(), (size_t) 1024);
         void* buffs[] = {(void*) this->writer->getWritePointer()};
         int samples = device->readStream(stream, buffs, available, flags, timeNs, timeoutNs);
         if (samples > 0) {
