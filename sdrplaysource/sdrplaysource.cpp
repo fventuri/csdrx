@@ -557,6 +557,23 @@ void SDRplaySource<T>::setIFType(int if_type)
 }
 
 template <typename T>
+void SDRplaySource<T>::setPPM(double ppm)
+{
+    if (ppm != device_params->devParams->ppm) {
+        device_params->devParams->ppm = ppm;
+        if (run) {
+            auto err = sdrplay_api_Update(device.dev, device.tuner,
+                                          sdrplay_api_Update_Dev_Ppm,
+                                          sdrplay_api_Update_Ext1_None);
+            if (err != sdrplay_api_Success)
+                throw SDRplayException("sdrplay_api_Update(Dev_Ppm) failed");
+        }
+    }
+
+    return;
+}
+
+template <typename T>
 void SDRplaySource<T>::setDCOffset(bool enable)
 {
     unsigned char DCenable = enable ? 1 : 0;
