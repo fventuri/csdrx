@@ -30,6 +30,7 @@ namespace Csdrx {
             void setIFGainReduction(int gRdB);   // gRdB == 0 -> enable AGC
             void setRFLnaState(unsigned char LNAstate);
             void setIFType(int if_type);
+            void setPPM(double ppm);
             void setDCOffset(bool enable);
             void setIQBalance(bool enable);
             void stream_callback(short *xi, short *xq,

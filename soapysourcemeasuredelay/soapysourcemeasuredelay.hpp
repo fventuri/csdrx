@@ -34,6 +34,7 @@ namespace Csdrx {
             void setGain(const double value);
             void setGain(const std::string& name, const double value);
             void setAGC(bool enable);
+            void setPPM(const double ppm);
             void setDCOffset(bool enable);
 #if defined(SOAPY_SDR_API_VERSION) && (SOAPY_SDR_API_VERSION >= 0x00080000)
             void setIQBalance(bool enable);

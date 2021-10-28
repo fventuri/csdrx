@@ -187,6 +187,16 @@ void SoapySourceMeasureDelay<T>::setAGC(bool enable)
 }
 
 template <typename T>
+void SoapySourceMeasureDelay<T>::setPPM(const double ppm)
+{
+#if defined(SOAPY_SDR_API_VERSION) && (SOAPY_SDR_API_VERSION >= 0x00060000)
+    device->setFrequencyCorrection(SOAPY_SDR_RX, channel, ppm);
+#else
+    device->setFrequency(SOAPY_SDR_RX, channel, "CORR", ppm);
+#endif
+}
+
+template <typename T>
 void SoapySourceMeasureDelay<T>::setDCOffset(bool enable)
 {
     device->setDCOffsetMode(SOAPY_SDR_RX, channel, enable);
