@@ -129,6 +129,7 @@ bool SoapySourceMeasureDelay<T>::isRunning() const {
     return run;
 }
 
+// setters
 template <typename T>
 void SoapySourceMeasureDelay<T>::setChannel(const size_t channel)
 {
@@ -220,6 +221,91 @@ template <typename T>
 void SoapySourceMeasureDelay<T>::writeChannelSetting(const std::string &key, const std::string &value)
 {
     device->writeSetting(SOAPY_SDR_RX, channel, key, value);
+}
+
+// getters
+template <typename T>
+size_t SoapySourceMeasureDelay<T>::getChannel() const
+{
+    return channel;
+}
+
+template <typename T>
+double SoapySourceMeasureDelay<T>::getSamplerate() const
+{
+    return device->getSampleRate(SOAPY_SDR_RX, channel);
+}
+
+template <typename T>
+double SoapySourceMeasureDelay<T>::getBandwidth() const
+{
+    return device->getBandwidth(SOAPY_SDR_RX, channel);
+}
+
+template <typename T>
+double SoapySourceMeasureDelay<T>::getFrequency() const
+{
+    return device->getFrequency(SOAPY_SDR_RX, channel);
+}
+
+template <typename T>
+std::string SoapySourceMeasureDelay<T>::getAntenna() const
+{
+    return device->getAntenna(SOAPY_SDR_RX, channel);
+}
+
+template <typename T>
+double SoapySourceMeasureDelay<T>::getGain() const
+{
+    return device->getGain(SOAPY_SDR_RX, channel);
+}
+
+template <typename T>
+double SoapySourceMeasureDelay<T>::getGain(const std::string& name) const
+{
+    return device->getGain(SOAPY_SDR_RX, channel, name);
+}
+
+template <typename T>
+bool SoapySourceMeasureDelay<T>::getAGC() const
+{
+    return device->getGainMode(SOAPY_SDR_RX, channel);
+}
+
+template <typename T>
+double SoapySourceMeasureDelay<T>::getPPM() const
+{
+#if defined(SOAPY_SDR_API_VERSION) && (SOAPY_SDR_API_VERSION >= 0x00060000)
+    return device->getFrequencyCorrection(SOAPY_SDR_RX, channel);
+#else
+    return device->getFrequency(SOAPY_SDR_RX, channel, "CORR");
+#endif
+}
+
+template <typename T>
+bool SoapySourceMeasureDelay<T>::getDCOffset() const
+{
+    return device->getDCOffsetMode(SOAPY_SDR_RX, channel);
+}
+
+#if defined(SOAPY_SDR_API_VERSION) && (SOAPY_SDR_API_VERSION >= 0x00080000)
+template <typename T>
+bool SoapySourceMeasureDelay<T>::getIQBalance() const
+{
+    return device->getIQBalanceMode(SOAPY_SDR_RX, channel);
+}
+#endif
+
+template <typename T>
+std::string SoapySourceMeasureDelay<T>::readSetting(const std::string &key) const
+{
+    return device->readSetting(key);
+}
+
+template <typename T>
+std::string SoapySourceMeasureDelay<T>::readChannelSetting(const std::string &key) const
+{
+    return device->readSetting(SOAPY_SDR_RX, channel, key);
 }
 
 template <typename T>

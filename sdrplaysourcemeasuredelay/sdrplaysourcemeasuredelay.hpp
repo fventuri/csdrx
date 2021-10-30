@@ -23,6 +23,7 @@ namespace Csdrx {
             void setWriter(Csdr::Writer<T>* writer) override;
             void stop();
             bool isRunning() const;
+            // setters
             void setSamplerate(double samplerate);
             void setBandwidth(double samplerate);
             void setFrequency(double frequency);
@@ -33,6 +34,17 @@ namespace Csdrx {
             void setPPM(double ppm);
             void setDCOffset(bool enable);
             void setIQBalance(bool enable);
+            // getters
+            double getSamplerate() const;
+            double getBandwidth() const;
+            double getFrequency() const;
+            const char* getAntenna() const;
+            int getIFGainReduction() const;
+            unsigned char getRFLnaState() const;
+            int getIFType() const;
+            double getPPM() const;
+            bool getDCOffset() const;
+            bool getIQBalance() const;
             void stream_callback(short *xi, short *xq,
                                  sdrplay_api_StreamCbParamsT *params,
                                  unsigned int numSamples, unsigned int reset);
