@@ -7,6 +7,7 @@
 #include <csdr/firdecimate.hpp>
 #include <csdr/fmdemod.hpp>
 #include <csdr/fractionaldecimator.hpp>
+#include <csdr/source.hpp>
 #include <csdr/shift.hpp>
 #include <csdrx/filesource.hpp>
 #include <csdrx/pipeline.hpp>
@@ -41,9 +42,7 @@ int main()
       | new FractionalDecimator<float>(4.166666666666667, 12, prefilter)
       | new WfmDeemphasis(48000, 7.5e-05)
       | new Converter<float, short>()
-      | new PulseAudioWriter<short>(48000, 10240, "fm_receiver_sdrplay_source");
-
-    auto tuner = dynamic_cast<ShiftAddfast*>(p.getModule(1));
+      | new PulseAudioWriter<short>(48000, 10240, "fm_receiver");
 
     struct timespec delay = { 0, 100000000 };   // 100ms delay
 
@@ -51,10 +50,10 @@ int main()
 
     sleep(10);
     std::cerr << "changing station" << std::endl;
-    tuner->setRate(-0.25);
+    p.replaceStage(new ShiftAddfast(-0.25), 1);
     sleep(10);
     std::cerr << "changing station back" << std::endl;
-    tuner->setRate(0.25);
+    p.replaceStage(new ShiftAddfast(0.25), 1);
 
     // handle Ctrl-C
     signal(SIGINT, sigint_handler);

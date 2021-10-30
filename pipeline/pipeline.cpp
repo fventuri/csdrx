@@ -14,6 +14,7 @@ constexpr int T_BUFSIZE = (1024 * 1024 / 4);
 typedef Csdr::complex<short> CS16;
 typedef Csdr::complex<float> CF32;
 
+using namespace Csdrx;
 
 Pipeline::Pipeline(Csdr::UntypedSource* source, bool deleteUnusedModules):
     source(source),

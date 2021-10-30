@@ -7,7 +7,7 @@ endif()
 project (csdrx VERSION 0.1.0)
 
 enable_language(CXX)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 include(GNUInstallDirs)
 
@@ -58,6 +58,11 @@ install(FILES
 )
 
 include(FindPkgConfig)
+
+if(NOT DEFINED COMPONENTS OR "pipeline" IN_LIST COMPONENTS)
+    add_subdirectory(pipeline)
+    target_sources(csdrx PRIVATE $<TARGET_OBJECTS:pipeline>)
+endif()
 
 if(NOT DEFINED COMPONENTS OR "filesource" IN_LIST COMPONENTS)
     add_subdirectory(filesource)
