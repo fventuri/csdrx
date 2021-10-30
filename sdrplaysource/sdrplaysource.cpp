@@ -279,6 +279,7 @@ bool SDRplaySource<T>::isRunning() const {
     return run;
 }
 
+// setters
 template <typename T>
 void SDRplaySource<T>::setSamplerate(double samplerate)
 {
@@ -608,6 +609,139 @@ void SDRplaySource<T>::setIQBalance(bool enable)
     }
 
     return;
+}
+
+// getters
+template <typename T>
+double SDRplaySource<T>::getSamplerate() const
+{
+    return samplerate;
+}
+
+template <typename T>
+double SDRplaySource<T>::getBandwidth() const
+{
+    sdrplay_api_Bw_MHzT bwType = rx_channel_params->tunerParams.bwType;
+    if      (bwType == sdrplay_api_BW_0_200) { return  200e3; }
+    else if (bwType == sdrplay_api_BW_0_300) { return  300e3; }
+    else if (bwType == sdrplay_api_BW_0_600) { return  600e3; }
+    else if (bwType == sdrplay_api_BW_1_536) { return 1536e3; }
+    else if (bwType == sdrplay_api_BW_5_000) { return 5000e3; }
+    else if (bwType == sdrplay_api_BW_6_000) { return 6000e3; }
+    else if (bwType == sdrplay_api_BW_7_000) { return 7000e3; }
+    else if (bwType == sdrplay_api_BW_8_000) { return 8000e3; }
+    else                                     { return      0; }
+}
+
+template <typename T>
+double SDRplaySource<T>::getFrequency() const
+{
+    return rx_channel_params->tunerParams.rfFreq.rfHz;
+}
+
+template <typename T>
+const char* SDRplaySource<T>::getAntenna() const
+{
+    if (device.hwVer == SDRPLAY_RSP1_ID || device.hwVer == SDRPLAY_RSP1A_ID) {
+        static const char* antenna = "";
+        return antenna;
+    }
+
+    if (device.hwVer == SDRPLAY_RSP2_ID) {
+        sdrplay_api_Rsp2_AntennaSelectT antennaSel = rx_channel_params->rsp2TunerParams.antennaSel;
+        sdrplay_api_Rsp2_AmPortSelectT amPortSel = rx_channel_params->rsp2TunerParams.amPortSel;
+        if (antennaSel == sdrplay_api_Rsp2_ANTENNA_A) {
+            if (amPortSel == sdrplay_api_Rsp2_AMPORT_2) {
+                static const char* antennaA = "Antenna A";
+                return antennaA;
+            } else if (amPortSel == sdrplay_api_Rsp2_AMPORT_1) {
+                static const char* hiZ = "Hi-Z";
+                return hiZ;
+            }
+        } else if (antennaSel == sdrplay_api_Rsp2_ANTENNA_B) {
+            static const char* antennaB = "Antenna B";
+            return antennaB;
+        }
+    }
+
+    if (device.hwVer == SDRPLAY_RSPduo_ID) {
+        sdrplay_api_TunerSelectT tuner = device.tuner;
+        sdrplay_api_RspDuo_AmPortSelectT amPortSel = rx_channel_params->rspDuoTunerParams.tuner1AmPortSel;
+        if (tuner == sdrplay_api_Tuner_A) {
+            if (amPortSel == sdrplay_api_RspDuo_AMPORT_2) {
+                static const char* tuner1_50ohm = "Tuner 1 50ohm";
+                return tuner1_50ohm;
+            } else if (amPortSel == sdrplay_api_RspDuo_AMPORT_1) {
+                static const char* highZ = "High Z";
+                return highZ;
+            }
+        } else if (tuner == sdrplay_api_Tuner_B) {
+            static const char* tuner2_50ohm = "Tuner 2 50ohm";
+            return tuner2_50ohm;
+        }
+    }
+
+    if (device.hwVer == SDRPLAY_RSPdx_ID) {
+        sdrplay_api_RspDx_AntennaSelectT antennaSel = device_params->devParams->rspDxParams.antennaSel;
+        if (antennaSel == sdrplay_api_RspDx_ANTENNA_A) {
+            static const char* antennaA = "Antenna A";
+            return antennaA;
+        } else if (antennaSel == sdrplay_api_RspDx_ANTENNA_B) {
+            static const char* antennaB = "Antenna B";
+            return antennaB;
+        } else if (antennaSel == sdrplay_api_RspDx_ANTENNA_C) {
+            static const char* antennaC = "Antenna C";
+            return antennaC;
+        }
+    }
+
+    static const char* unknown = "Unknown";
+    return unknown;
+}
+
+template <typename T>
+int SDRplaySource<T>::getIFGainReduction() const
+{
+    if (rx_channel_params->ctrlParams.agc.enable != sdrplay_api_AGC_DISABLE) {
+        return 0;
+    } else {
+        return rx_channel_params->tunerParams.gain.gRdB;
+    }
+}
+
+template <typename T>
+unsigned char SDRplaySource<T>::getRFLnaState() const
+{
+    return rx_channel_params->tunerParams.gain.LNAstate;
+}
+
+template <typename T>
+int SDRplaySource<T>::getIFType() const
+{
+    sdrplay_api_If_kHzT ifType = rx_channel_params->tunerParams.ifType;
+    if      (ifType == sdrplay_api_IF_Zero)  { return    0; }
+    else if (ifType == sdrplay_api_IF_0_450) { return  450; }
+    else if (ifType == sdrplay_api_IF_1_620) { return 1620; }
+    else if (ifType == sdrplay_api_IF_2_048) { return 2048; }
+    else                                     { return   -1; }
+}
+
+template <typename T>
+double SDRplaySource<T>::getPPM() const
+{
+    return device_params->devParams->ppm;
+}
+
+template <typename T>
+bool SDRplaySource<T>::getDCOffset() const
+{
+    return (bool) rx_channel_params->ctrlParams.dcOffset.DCenable;
+}
+
+template <typename T>
+bool SDRplaySource<T>::getIQBalance() const
+{
+    return (bool) rx_channel_params->ctrlParams.dcOffset.IQenable;
 }
 
 template <typename T>
