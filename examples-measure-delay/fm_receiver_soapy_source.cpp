@@ -8,9 +8,9 @@
 #include <csdr/fmdemod.hpp>
 #include <csdr/fractionaldecimator.hpp>
 #include <csdr/shift.hpp>
-#include <csdrx/soapysourcemeasuredelay.hpp>
+#include <csdrx/pipelinemeasuredelay.hpp>
 #include <csdrx/pulseaudiowritermeasuredelay.hpp>
-#include "pipeline.hpp"
+#include <csdrx/soapysourcemeasuredelay.hpp>
 
 constexpr int T_BUFSIZE = (1024 * 1024 / 4);
 
@@ -40,7 +40,7 @@ int main()
 
     auto rspdx = new SoapySourceMeasureDelay<CF32>("driver=sdrplay", 0, 2000000, 90.4e6, "Antenna C");
 
-    Pipeline p(rspdx, true);
+    PipelineMeasureDelay p(rspdx, true);
     p | new ShiftAddfast(0.25)
       | new FirDecimate(10, 0.015, hamming)
       | new FilterModule<CF32>(new BandPassFilter<CF32>(-0.375, 0.375, 0.0016, hamming))

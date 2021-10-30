@@ -8,9 +8,9 @@
 #include <csdr/fmdemod.hpp>
 #include <csdr/fractionaldecimator.hpp>
 #include <csdr/shift.hpp>
-#include <csdrx/tcpsourcemeasuredelay.hpp>
+#include <csdrx/pipelinemeasuredelay.hpp>
 #include <csdrx/pulseaudiowritermeasuredelay.hpp>
-#include "pipeline.hpp"
+#include <csdrx/tcpsourcemeasuredelay.hpp>
 
 constexpr int T_BUFSIZE = (1024 * 1024 / 4);
 
@@ -38,7 +38,7 @@ int main()
     auto hamming = new HammingWindow();
     auto prefilter = new LowPassFilter<float>(0.5 / (4.166666666666667 - 0.03), 0.03, hamming);
 
-    Pipeline p(new TcpSourceMeasureDelay<CF32>(2000000, 4950), true);
+    PipelineMeasureDelay p(new TcpSourceMeasureDelay<CF32>(2000000, 4950), true);
     p | new ShiftAddfast(0.25)
       | new FirDecimate(10, 0.015, hamming)
       | new FilterModule<CF32>(new BandPassFilter<CF32>(-0.375, 0.375, 0.0016, hamming))

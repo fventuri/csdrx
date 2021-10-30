@@ -64,6 +64,11 @@ if(NOT DEFINED COMPONENTS OR "pipeline" IN_LIST COMPONENTS)
     target_sources(csdrx PRIVATE $<TARGET_OBJECTS:pipeline>)
 endif()
 
+if(NOT DEFINED COMPONENTS OR "pipelinemeasuredelay" IN_LIST COMPONENTS)
+    add_subdirectory(pipelinemeasuredelay)
+    target_sources(csdrx PRIVATE $<TARGET_OBJECTS:pipelinemeasuredelay>)
+endif()
+
 if(NOT DEFINED COMPONENTS OR "filesource" IN_LIST COMPONENTS)
     add_subdirectory(filesource)
     target_sources(csdrx PRIVATE $<TARGET_OBJECTS:filesource>)

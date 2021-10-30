@@ -7,22 +7,23 @@
 
 #include <vector>
 #include <csdr/complex.hpp>
-#include "pipeline.hpp"
+#include "pipelinemeasuredelay.hpp"
 
 constexpr int T_BUFSIZE = (1024 * 1024 / 4);
 
 typedef Csdr::complex<short> CS16;
 typedef Csdr::complex<float> CF32;
 
+using namespace Csdrx;
 
-Pipeline::Pipeline(Csdr::UntypedSource* source, bool deleteUnusedModules):
+PipelineMeasureDelay::PipelineMeasureDelay(Csdr::UntypedSource* source, bool deleteUnusedModules):
     source(source),
     deleteUnusedModules(deleteUnusedModules),
     sourceWriter(nullptr),
     stages(std::vector<Stage*>())
 {}
 
-Pipeline::~Pipeline() {
+PipelineMeasureDelay::~PipelineMeasureDelay() {
     for (auto stage: stages) {
         delete stage->buffer;
         stage->buffer = nullptr;
@@ -44,7 +45,7 @@ Pipeline::~Pipeline() {
     }
 }
 
-int Pipeline::addStage(Csdr::UntypedModule* module, int afterStage)
+int PipelineMeasureDelay::addStage(Csdr::UntypedModule* module, int afterStage)
 {
     Stage* previousStage = getStage(afterStage);
     connectStagesUntyped(previousStage, module);
@@ -54,7 +55,7 @@ int Pipeline::addStage(Csdr::UntypedModule* module, int afterStage)
     return stages.size();
 }
 
-int Pipeline::replaceStage(Csdr::UntypedModule* module, int stageNum)
+int PipelineMeasureDelay::replaceStage(Csdr::UntypedModule* module, int stageNum)
 {
     Stage* stage = getStage(stageNum);
     if (stage == nullptr)
@@ -102,7 +103,7 @@ int Pipeline::replaceStage(Csdr::UntypedModule* module, int stageNum)
     return stageNum >= 0 ? stageNum : stages.size() + stageNum + 1;
 }
 
-void Pipeline::addWriter(Csdr::UntypedWriter* writer, int afterStage)
+void PipelineMeasureDelay::addWriter(Csdr::UntypedWriter* writer, int afterStage)
 {
     Stage* previousStage = getStage(afterStage);
     if (previousStage == nullptr) {
@@ -123,19 +124,19 @@ void Pipeline::addWriter(Csdr::UntypedWriter* writer, int afterStage)
     return;
 }
 
-Pipeline& Pipeline::operator|(Csdr::UntypedModule* module)
+PipelineMeasureDelay& PipelineMeasureDelay::operator|(Csdr::UntypedModule* module)
 {
     addStage(module);
     return *this;
 }
 
-Pipeline& Pipeline::operator|(Csdr::UntypedWriter* writer)
+PipelineMeasureDelay& PipelineMeasureDelay::operator|(Csdr::UntypedWriter* writer)
 {
     addWriter(writer);
     return *this;
 }
 
-void Pipeline::run()
+void PipelineMeasureDelay::run()
 {
     // start the stages in reverse order
     std::vector<Stage*> sortedStages = stages;
@@ -155,7 +156,7 @@ void Pipeline::run()
     return;
 }
 
-void Pipeline::stop(double delay)
+void PipelineMeasureDelay::stop(double delay)
 {
     // stop the source first
     untypedToTyped1<Csdr::TcpSource, Csdr::UntypedSource>(source,
@@ -213,7 +214,7 @@ void Pipeline::stop(double delay)
     return;
 }
 
-bool Pipeline::isRunning()
+bool PipelineMeasureDelay::isRunning()
 {
     bool isRunning = true;
     untypedToTyped1<Csdrx::FileSource, Csdr::UntypedSource>(source,
@@ -223,12 +224,12 @@ bool Pipeline::isRunning()
     return isRunning;
 }
 
-Csdr::UntypedSource* Pipeline::getSource()
+Csdr::UntypedSource* PipelineMeasureDelay::getSource()
 {
     return source;
 }
 
-Csdr::UntypedModule* Pipeline::getModule(int stageNum)
+Csdr::UntypedModule* PipelineMeasureDelay::getModule(int stageNum)
 {
     Stage* stage = getStage(stageNum);
     if (stage == nullptr)
@@ -236,7 +237,7 @@ Csdr::UntypedModule* Pipeline::getModule(int stageNum)
     return stage->module;
 }
 
-Pipeline::Stage::Stage(Csdr::UntypedModule* module,
+PipelineMeasureDelay::Stage::Stage(Csdr::UntypedModule* module,
                        Csdr::UntypedWriter* buffer,
                        Csdr::AsyncRunner* runner,
                        int distanceFromSource):
@@ -246,17 +247,17 @@ Pipeline::Stage::Stage(Csdr::UntypedModule* module,
     distanceFromSource(distanceFromSource)
 {}
 
-Pipeline::Stage::~Stage() {}
+PipelineMeasureDelay::Stage::~Stage() {}
 
 // internal functions
-Pipeline::Stage* Pipeline::getStage(int stageNum) const
+PipelineMeasureDelay::Stage* PipelineMeasureDelay::getStage(int stageNum) const
 {
     int stgnum = stageNum >= 0 ? stageNum : stages.size() + stageNum + 1;
     // stage 0 is the pipeline source
     return stgnum == 0 ? nullptr : stages.at(stgnum - 1);
 }
 
-void Pipeline::connectStagesUntyped(Stage* previousStage, Csdr::UntypedModule* module)
+void PipelineMeasureDelay::connectStagesUntyped(Stage* previousStage, Csdr::UntypedModule* module)
 {
     bool ok = false;
     if (auto from = previousStage == nullptr ?
@@ -303,7 +304,7 @@ void Pipeline::connectStagesUntyped(Stage* previousStage, Csdr::UntypedModule* m
 }
 
 template <typename T>
-void Pipeline::connectStagesTyped(Csdr::Source<T>* source, Csdr::Sink<T>* sink, Stage* previousStage)
+void PipelineMeasureDelay::connectStagesTyped(Csdr::Source<T>* source, Csdr::Sink<T>* sink, Stage* previousStage)
 {
     Csdr::Ringbuffer<T>* buffer;
     if (previousStage == nullptr) {
@@ -330,7 +331,7 @@ void Pipeline::connectStagesTyped(Csdr::Source<T>* source, Csdr::Sink<T>* sink, 
 
 // meta functions
 template <template<typename> typename T, typename U, typename P>
-bool Pipeline::untypedToTyped1(U* untyped, P pred)
+bool PipelineMeasureDelay::untypedToTyped1(U* untyped, P pred)
 {
     if (auto typed = dynamic_cast<T<CF32>*>(untyped)) {
         pred(typed);
@@ -349,7 +350,7 @@ bool Pipeline::untypedToTyped1(U* untyped, P pred)
 }
 
 template <template<typename> typename T, typename U, typename P>
-bool Pipeline::untypedToTyped1complex(U* untyped, P pred)
+bool PipelineMeasureDelay::untypedToTyped1complex(U* untyped, P pred)
 {
     if (auto typed = dynamic_cast<T<CF32>*>(untyped)) {
         pred(typed);
@@ -364,7 +365,7 @@ bool Pipeline::untypedToTyped1complex(U* untyped, P pred)
 template <template<typename> typename T1, typename U1,
           template<typename> typename T2, typename U2,
           typename P>
-bool Pipeline::untypedToTyped2(U1* untyped1, U2* untyped2, P pred)
+bool PipelineMeasureDelay::untypedToTyped2(U1* untyped1, U2* untyped2, P pred)
 {
     bool ok = false;
     if (auto typed1 = dynamic_cast<T1<CF32>*>(untyped1)) {
