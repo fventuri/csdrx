@@ -1,18 +1,25 @@
 CXX=g++
-#CXXFLAGS=-O -Wall
-CXXFLAGS=-g -Wall
+CXXFLAGS=-O -Wall
+#CXXFLAGS=-g -Wall
 LDLIBS=-lcsdr++ -lcsdrx
 
 
-all: fm_receiver_file_source fm_receiver_sdrplay_source fm_receiver_soapy_source fm_receiver_user_input
+all: fm_receiver_file_source fm_receiver_sdrplay_source \
+	fm_receiver_soapy_source fm_receiver_user_input \
+	dmr_receiver dstar_receiver fm_receiver_using_replace_module \
+	nbfm_receiver_stdout usb_receiver ysf_receiver
 
-fm_receiver_file_source: fm_receiver_file_source.cpp pipeline.cpp
+dstar_receiver: dstar_receiver.cpp
+	$(CXX) $(CXXFLAGS) $^ $(LDLIBS) -ldigiham -o $@
 
-fm_receiver_sdrplay_source: fm_receiver_sdrplay_source.cpp pipeline.cpp
+dmr_receiver: dmr_receiver.cpp
+	$(CXX) $(CXXFLAGS) $^ $(LDLIBS) -ldigiham -o $@
 
-fm_receiver_soapy_source: fm_receiver_soapy_source.cpp pipeline.cpp
-
-fm_receiver_user_input: fm_receiver_user_input.cpp pipeline.cpp
+ysf_receiver: ysf_receiver.cpp
+	$(CXX) $(CXXFLAGS) $^ $(LDLIBS) -ldigiham -o $@
 
 clean:
-	rm -f fm_receiver_file_source fm_receiver_sdrplay_source fm_receiver_soapy_source fm_receiver_user_input
+	rm -f fm_receiver_file_source fm_receiver_sdrplay_source \
+	      fm_receiver_soapy_source fm_receiver_user_input \
+	      dmr_receiver dstar_receiver fm_receiver_using_replace_module \
+	      nbfm_receiver_stdout usb_receiver ysf_receiver

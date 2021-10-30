@@ -8,9 +8,9 @@
 #include <csdr/fmdemod.hpp>
 #include <csdr/fractionaldecimator.hpp>
 #include <csdr/shift.hpp>
-#include <csdrx/soapysource.hpp>
+#include <csdrx/pipeline.hpp>
 #include <csdrx/pulseaudiowriter.hpp>
-#include "pipeline.hpp"
+#include <csdrx/soapysource.hpp>
 
 constexpr int T_BUFSIZE = (1024 * 1024 / 4);
 
