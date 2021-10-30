@@ -115,6 +115,7 @@ bool SoapySource<T>::isRunning() const {
     return run;
 }
 
+// setters
 template <typename T>
 void SoapySource<T>::setChannel(const size_t channel)
 {
@@ -206,6 +207,91 @@ template <typename T>
 void SoapySource<T>::writeChannelSetting(const std::string &key, const std::string &value)
 {
     device->writeSetting(SOAPY_SDR_RX, channel, key, value);
+}
+
+// getters
+template <typename T>
+size_t SoapySource<T>::getChannel() const
+{
+    return channel;
+}
+
+template <typename T>
+double SoapySource<T>::getSamplerate() const
+{
+    return device->getSampleRate(SOAPY_SDR_RX, channel);
+}
+
+template <typename T>
+double SoapySource<T>::getBandwidth() const
+{
+    return device->getBandwidth(SOAPY_SDR_RX, channel);
+}
+
+template <typename T>
+double SoapySource<T>::getFrequency() const
+{
+    return device->getFrequency(SOAPY_SDR_RX, channel);
+}
+
+template <typename T>
+std::string SoapySource<T>::getAntenna() const
+{
+    return device->getAntenna(SOAPY_SDR_RX, channel);
+}
+
+template <typename T>
+double SoapySource<T>::getGain() const
+{
+    return device->getGain(SOAPY_SDR_RX, channel);
+}
+
+template <typename T>
+double SoapySource<T>::getGain(const std::string& name) const
+{
+    return device->getGain(SOAPY_SDR_RX, channel, name);
+}
+
+template <typename T>
+bool SoapySource<T>::getAGC() const
+{
+    return device->getGainMode(SOAPY_SDR_RX, channel);
+}
+
+template <typename T>
+double SoapySource<T>::getPPM() const
+{
+#if defined(SOAPY_SDR_API_VERSION) && (SOAPY_SDR_API_VERSION >= 0x00060000)
+    return device->getFrequencyCorrection(SOAPY_SDR_RX, channel);
+#else
+    return device->getFrequency(SOAPY_SDR_RX, channel, "CORR");
+#endif
+}
+
+template <typename T>
+bool SoapySource<T>::getDCOffset() const
+{
+    return device->getDCOffsetMode(SOAPY_SDR_RX, channel);
+}
+
+#if defined(SOAPY_SDR_API_VERSION) && (SOAPY_SDR_API_VERSION >= 0x00080000)
+template <typename T>
+bool SoapySource<T>::getIQBalance() const
+{
+    return device->getIQBalanceMode(SOAPY_SDR_RX, channel);
+}
+#endif
+
+template <typename T>
+std::string SoapySource<T>::readSetting(const std::string &key) const
+{
+    return device->readSetting(key);
+}
+
+template <typename T>
+std::string SoapySource<T>::readChannelSetting(const std::string &key) const
+{
+    return device->readSetting(SOAPY_SDR_RX, channel, key);
 }
 
 template <typename T>

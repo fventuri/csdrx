@@ -32,6 +32,7 @@ namespace Csdrx {
             void setWriter(Csdr::Writer<T>* writer) override;
             void stop();
             bool isRunning() const;
+            // setters
             void setChannel(const size_t channel);
             void setSamplerate(const double samplerate);
             void setBandwidth(const double bw);
@@ -47,6 +48,22 @@ namespace Csdrx {
 #endif
             void writeSetting(const std::string &key, const std::string &value);
             void writeChannelSetting(const std::string &key, const std::string &value);
+            // getters
+            size_t getChannel() const;
+            double getSamplerate() const;
+            double getBandwidth() const;
+            double getFrequency() const;
+            std::string getAntenna() const;
+            double getGain() const;
+            double getGain(const std::string& name) const;
+            bool getAGC() const;
+            double getPPM() const;
+            bool getDCOffset() const;
+#if defined(SOAPY_SDR_API_VERSION) && (SOAPY_SDR_API_VERSION >= 0x00080000)
+            bool getIQBalance() const;
+#endif
+            std::string readSetting(const std::string &key) const;
+            std::string readChannelSetting(const std::string &key) const;
         private:
             std::string get_stream_format() const;
             void loop();
