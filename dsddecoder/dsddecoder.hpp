@@ -32,7 +32,10 @@ namespace Csdrx {
                 formatTextRefresh = refresh;
                 nbFormatTextSamplesLeft = 48000.0f * refresh;
             }
-            void setQuiet() { dsdDecoder.setQuiet(); }
+            void setLogVerbosity(int verbosity) { dsdDecoder.setLogVerbosity(verbosity); }
+            void setLogFile(const char *filename) { dsdDecoder.setLogFile(filename); }
+            void setTDMAStereo(bool tdmaStereo) { dsdDecoder.setTDMAStereo(tdmaStereo); }
+            void setQuiet();
             void setVerbosity(int verbosity) { dsdDecoder.setVerbosity(verbosity); }
             void showErrorBars() { dsdDecoder.showErrorBars(); }
             void showSymbolTiming() { dsdDecoder.showSymbolTiming(); }

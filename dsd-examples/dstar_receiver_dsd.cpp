@@ -10,9 +10,9 @@
 #include <csdr/fractionaldecimator.hpp>
 #include <csdr/shift.hpp>
 #include <csdrx/dsddecoder.hpp>
-#include <csdrx/filesource.hpp>
 #include <csdrx/pipeline.hpp>
 #include <csdrx/pulseaudiowriter.hpp>
+#include <csdrx/sdrplaysource.hpp>
 
 constexpr int T_BUFSIZE = (1024 * 1024 / 4);
 
@@ -35,6 +35,7 @@ int main()
     auto hamming = new HammingWindow();
 
     auto dstar_decoder = new DsdDecoder("dstar", stdout);
+    dstar_decoder->setQuiet();
     dstar_decoder->setFormatTextRefresh(1.0);       // refresh text every 1s
 
     auto agc = new Agc<short>();
@@ -44,7 +45,9 @@ int main()
     agc->setInitialGain(3);
     agc->setHangTime(600);
 
-    Pipeline p(new FileSource<CF32>(), true);
+    auto rspdx = new SDRplaySource<CF32>("", 2000000, 146.5e6, "Antenna C");
+
+    Pipeline p(rspdx, true);
     p | new ShiftAddfast(-0.1895)
       | new FirDecimate(41, 0.0036, hamming, 0.492)
       | new FractionalDecimator<CF32>(1.01626, 12, nullptr)

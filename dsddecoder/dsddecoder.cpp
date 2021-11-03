@@ -83,6 +83,10 @@ bool DsdDecoder::canProcess() {
 }
 
 // setters
+void DsdDecoder::setQuiet() {
+    dsdDecoder.setQuiet();
+}
+
 void DsdDecoder::setDecodeMode(DSDcc::DSDDecoder::DSDDecodeMode mode, bool on) {
     dsdDecoder.setDecodeMode(DSDcc::DSDDecoder::DSDDecodeAuto, false);
     dsdDecoder.setDecodeMode(mode, on);
