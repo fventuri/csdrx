@@ -44,5 +44,6 @@ void NavtexDecoderWriter<T>::advance(size_t how_much) {
 }
 
 namespace Csdrx {
+    template class NavtexDecoderWriter<short>;
     template class NavtexDecoderWriter<float>;
 }

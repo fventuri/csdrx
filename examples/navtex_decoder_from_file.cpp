@@ -15,8 +15,7 @@ using namespace Csdrx;
 int main()
 {
     Pipeline p(new FileSource<short>("", 48000), true);
-    p | new Converter<short, float>()
-      | new NavtexDecoderWriter<float>(48000, stdout);
+    p | new NavtexDecoderWriter<short>(48000, stdout);
  
     // disable buffering on stdout
     setvbuf(stdout, nullptr, _IONBF, 0);
