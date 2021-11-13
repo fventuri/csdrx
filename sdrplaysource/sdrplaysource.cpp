@@ -46,7 +46,9 @@ template <typename T>
 SDRplaySource<T>::SDRplaySource(const char* serial,
                                 double samplerate,
                                 double frequency,
-                                const char* antenna)
+                                const char* antenna,
+                                int loglevel):
+    loglevel(loglevel)
 {
     open_sdrplay_api();
     select_device(serial, antenna);
@@ -271,7 +273,8 @@ void SDRplaySource<T>::stop() {
             throw SDRplayException("sdrplay_api_Uninit() failed");
     }
     run = false;
-    std::cerr << "total_samples: " << total_samples << std::endl;
+    if (loglevel >= 1)
+        std::cerr << "total_samples: " << total_samples << std::endl;
 }
 
 template <typename T>

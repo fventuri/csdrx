@@ -24,7 +24,7 @@ int main()
     auto hamming = new HammingWindow();
     auto prefilter = new LowPassFilter<float>(0.5 / (4.166666666666667 - 0.03), 0.03, hamming);
 
-    auto rspdx = new SDRplaySource<CF32>("", 2000000, 90.4e6, "Antenna C");
+    auto rspdx = new SDRplaySource<CF32>("", 2000000, 90.4e6, "Antenna C", 1);
 
     Pipeline p(rspdx, true);
     p | new ShiftAddfast(0.25)

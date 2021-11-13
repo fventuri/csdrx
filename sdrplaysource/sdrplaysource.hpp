@@ -24,7 +24,8 @@ namespace Csdrx {
             SDRplaySource(const char* serial = nullptr,
                           double samplerate = 2e6,
                           double frequency = 100e6,
-                          const char* antenna = nullptr);
+                          const char* antenna = nullptr,
+                          int loglevel = 0);
             ~SDRplaySource();
             void setWriter(Csdr::Writer<T>* writer) override;
             void stop();
@@ -64,6 +65,7 @@ namespace Csdrx {
             sdrplay_api_DeviceParamsT *device_params;
             sdrplay_api_RxChannelParamsT *rx_channel_params;
             double samplerate;
+            int loglevel;
             bool run = false;
             bool device_selected = false;
             size_t total_samples = 0;
