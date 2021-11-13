@@ -17,7 +17,7 @@ namespace Csdrx {
     template <typename T>
     class NavtexDecoderWriter: public Csdr::Writer<T> {
         public:
-            NavtexDecoderWriter(unsigned int samplerate, FILE* outfile,
+            NavtexDecoderWriter(unsigned int samplerate, FILE* rawfile,
                                 bool reverse = false, size_t buffer_size = 8192);
             ~NavtexDecoderWriter();
             size_t writeable() override;

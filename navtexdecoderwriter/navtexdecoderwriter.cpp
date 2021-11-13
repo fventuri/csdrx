@@ -13,13 +13,12 @@ using namespace Csdrx;
 
 template <typename T>
 NavtexDecoderWriter<T>::NavtexDecoderWriter(unsigned int samplerate,
-                                            FILE* outfile, bool reverse,
+                                            FILE* rawfile, bool reverse,
                                             size_t buffer_size):
     buffer_size(buffer_size),
     buffer((T*) malloc(sizeof(T) * buffer_size))
 {
-    // ignore the auxiliary stream (for now): set err=nullptr
-    nv = new navtex_rx(samplerate, false, reverse, outfile, nullptr);
+    nv = new navtex_rx(samplerate, false, reverse, rawfile);
 }
 
 template <typename T>
