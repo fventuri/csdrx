@@ -41,6 +41,7 @@ namespace Csdrx {
             void setPPM(double ppm);
             void setDCOffset(bool enable);
             void setIQBalance(bool enable);
+            void setBulkTransferMode(bool enable);
             // getters
             double getSamplerate() const;
             double getBandwidth() const;
@@ -52,6 +53,7 @@ namespace Csdrx {
             double getPPM() const;
             bool getDCOffset() const;
             bool getIQBalance() const;
+            bool getBulkTransferMode() const;
             void stream_callback(short *xi, short *xq,
                                  sdrplay_api_StreamCbParamsT *params,
                                  unsigned int numSamples, unsigned int reset);

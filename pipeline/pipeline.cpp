@@ -45,6 +45,15 @@ Pipeline::~Pipeline() {
     }
 }
 
+int Pipeline::getStageNumber(Csdr::UntypedModule* module)
+{
+    auto it = std::find_if(stages.begin(), stages.end(),
+                           [&module](auto x) { return x->module == module; });
+    if (it != stages.end())
+        return std::distance(stages.begin(), it) + 1;
+    return -1;
+}
+
 int Pipeline::addStage(Csdr::UntypedModule* module, int afterStage)
 {
     Stage* previousStage = getStage(afterStage);

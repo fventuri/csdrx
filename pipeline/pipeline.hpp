@@ -27,6 +27,7 @@ namespace Csdrx {
         public:
             Pipeline(Csdr::UntypedSource* source, bool deleteUnusedModules=false);
             ~Pipeline();
+            int getStageNumber(Csdr::UntypedModule* module);
             int addStage(Csdr::UntypedModule* module, int afterStage=-1);
             int replaceStage(Csdr::UntypedModule* module, int stageNum);
             void addWriter(Csdr::UntypedWriter* writer, int afterStage=-1);

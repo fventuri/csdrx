@@ -563,7 +563,7 @@ void SDRplaySource<T>::setIFType(int if_type)
 template <typename T>
 void SDRplaySource<T>::setPPM(double ppm)
 {
-    if (ppm != device_params->devParams->ppm) {
+    if (device_params->devParams && ppm != device_params->devParams->ppm) {
         device_params->devParams->ppm = ppm;
         if (run) {
             auto err = sdrplay_api_Update(device.dev, device.tuner,
@@ -610,6 +610,17 @@ void SDRplaySource<T>::setIQBalance(bool enable)
                 throw SDRplayException("sdrplay_api_Update(Ctrl_DCoffsetIQimbalance) failed");
         }
     }
+
+    return;
+}
+
+template <typename T>
+void SDRplaySource<T>::setBulkTransferMode(bool enable)
+{
+    sdrplay_api_TransferModeT mode = enable ? sdrplay_api_BULK :
+                                              sdrplay_api_ISOCH;
+    if (device_params->devParams && mode != device_params->devParams->mode)
+        device_params->devParams->mode = mode;
 
     return;
 }
@@ -745,6 +756,13 @@ template <typename T>
 bool SDRplaySource<T>::getIQBalance() const
 {
     return (bool) rx_channel_params->ctrlParams.dcOffset.IQenable;
+}
+
+template <typename T>
+bool SDRplaySource<T>::getBulkTransferMode() const
+{
+    return device_params->devParams &&
+           device_params->devParams->mode == sdrplay_api_BULK;
 }
 
 template <typename T>
