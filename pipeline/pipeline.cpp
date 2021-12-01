@@ -64,11 +64,14 @@ int Pipeline::addStage(Csdr::UntypedModule* module, int afterStage)
     return stages.size();
 }
 
-int Pipeline::replaceStage(Csdr::UntypedModule* module, int stageNum)
+int Pipeline::replaceStage(Csdr::UntypedModule* module, int stageNum, bool keepOldModule)
 {
     Stage* stage = getStage(stageNum);
     if (stage == nullptr)
         throw std::runtime_error("replacing the pipeline source is not implemented");
+
+    if (stage->module == module)
+        return stageNum >= 0 ? stageNum : stages.size() + stageNum + 1;
 
     // connect new module source
     untypedToTyped2<Csdr::Source, Csdr::UntypedModule,
@@ -105,7 +108,7 @@ int Pipeline::replaceStage(Csdr::UntypedModule* module, int stageNum)
         });
 
     // delete the old module and replace the module in the stage
-    if (deleteUnusedModules)
+    if (!keepOldModule)
         delete stage->module;
     stage->module = module;
 
