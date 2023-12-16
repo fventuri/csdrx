@@ -1,7 +1,7 @@
 CXX=g++
 CXXFLAGS=-O -Wall
 #CXXFLAGS=-g -Wall
-LDLIBS=-lcsdr++ -lcsdrx
+LDLIBS=-lcsdr -lcsdrx
 
 
 all: fm_receiver_file_source fm_receiver_sdrplay_source \

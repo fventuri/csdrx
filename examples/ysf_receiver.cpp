@@ -1,6 +1,7 @@
 #include <csignal>
 #include <iostream>
 #include <csdr/agc.hpp>
+#include <csdr/dcblock.hpp>
 #include <csdr/fftfilter.hpp>
 #include <csdr/filter.hpp>
 //#include <csdr/fir.hpp>
@@ -11,7 +12,6 @@
 #include <csdrx/filesource.hpp>
 #include <csdrx/pipeline.hpp>
 #include <csdrx/pulseaudiowriter.hpp>
-#include <digiham/dc_block.hpp>
 #include <digiham/digitalvoice_filter.hpp>
 #include <digiham/gfsk_demodulator.hpp>
 #include <digiham/mbe_synthesizer.hpp>
@@ -70,7 +70,7 @@ int main()
 //      | new FilterModule<CF32>(new BandPassFilter<CF32>(-0.0833333, 0.0833333, 0.00666667, hamming))
       | new FilterModule<CF32>(new FftBandPassFilter(-0.0833333, 0.0833333, 0.00666667, hamming))
       | new FmDemod()
-      | new DcBlock::DcBlock()
+      | new DcBlock()
       | new RrcFilter::WideRrcFilter()
       | new Fsk::GfskDemodulator(10)
       | ysf_decoder
