@@ -15,11 +15,9 @@ using namespace Csdrx;
 template<typename T>
 SDRplaySource<T>::~SDRplaySource() {
     if (device_selected) {
-        sdrplay_api_LockDeviceApi();
         auto err = sdrplay_api_ReleaseDevice(&device);
         if (err != sdrplay_api_Success)
             std::cerr << "sdrplay_api_ReleaseDevice() failed" << std::endl;
-        sdrplay_api_UnlockDeviceApi();
     }
     auto err = sdrplay_api_Close();
     if (err != sdrplay_api_Success)
@@ -74,6 +72,9 @@ void SDRplaySource<T>::select_device(const char* serial,
 
     bool found = false;
     for (int i = 0; i < ndevices; i++) {
+        if (!devices[i].valid) {
+            continue
+        }
         if (devices[i].hwVer == SDRPLAY_RSPduo_ID) {
             if (select_device_rspduo(devices[i], serial, antenna)) {
                 found = true;
@@ -656,7 +657,7 @@ double SDRplaySource<T>::getFrequency() const
 template <typename T>
 const char* SDRplaySource<T>::getAntenna() const
 {
-    if (device.hwVer == SDRPLAY_RSP1_ID || device.hwVer == SDRPLAY_RSP1A_ID) {
+    if (device.hwVer == SDRPLAY_RSP1_ID || device.hwVer == SDRPLAY_RSP1A_ID || device.hwVer == SDRPLAY_RSP1B_ID) {
         static const char* antenna = "";
         return antenna;
     }
