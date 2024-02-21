@@ -73,7 +73,7 @@ void SDRplaySource<T>::select_device(const char* serial,
     bool found = false;
     for (int i = 0; i < ndevices; i++) {
         if (!devices[i].valid) {
-            continue
+            continue;
         }
         if (devices[i].hwVer == SDRPLAY_RSPduo_ID) {
             if (select_device_rspduo(devices[i], serial, antenna)) {
